@@ -1,9 +1,18 @@
-# Starting Kit
+# Starting Kit – Grain 1 (Generalization)
 
-***
+This folder contains the **starting kit** for the Grain 1 generalization challenge.
 
-Check `README.ipynb` to get started with the starting kit. You can also import `README.ipynb` in [Google Colab](https://colab.research.google.com/). Complete the missing pieces in the notebook or create a new notebook in the way you want.
+## Getting Started
+Open the notebook:
+- `grain_1_generalization_starting_kit.ipynb`
 
+You can run it:
+- Locally (conda / venv)
+- Or upload it to **Google Colab**
 
-### Conda
-Locally you can run the notebook in a conda virtual env. Follow the instructions [here](../Conda/) for conda setup
+## What this notebook contains
+- Data loading
+- Baseline model
+- Evaluation setup
+
+Complete or extend the notebook as needed.
