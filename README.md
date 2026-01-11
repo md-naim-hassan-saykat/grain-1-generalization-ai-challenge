@@ -1,6 +1,6 @@
 # Grain 1 – Generalization AI Challenge
 
-This repository contains the **starting kit and materials** for **Group 1 (Grain – Generalization)** of the AI-Master Challenge Course (2025–26)** at Université Paris-Saclay.
+This repository contains the **starting kit and materials** for **Group 1 (Grain – Generalization)** of the AI-Master Challenge Course (2025–26) at Université Paris-Saclay.
 
 ---
 
