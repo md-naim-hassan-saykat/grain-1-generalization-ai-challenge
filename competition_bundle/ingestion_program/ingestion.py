@@ -1,29 +1,23 @@
 import os
-import sys
-from pathlib import Path
+import numpy as np
 
-def main():
-    # Typical signature: python ingestion.py <input_dir> <output_dir> <program_dir?>
-    input_dir = sys.argv[1] if len(sys.argv) > 1 else "/app/input"
-    output_dir = sys.argv[2] if len(sys.argv) > 2 else "/app/output"
+# DO NOT CHANGE THESE PATHS
+input_dir = "/app/input_data"
+output_dir = "/app/output"
+submission_dir = "/app/ingested_program"
 
-    os.makedirs(output_dir, exist_ok=True)
+os.makedirs(output_dir, exist_ok=True)
 
-    pred_path = os.path.join(output_dir, "prediction")  # IMPORTANT: no extension
+# Dummy prediction: one line per input file
+prediction_path = os.path.join(output_dir, "prediction")
 
-    # Create a simple prediction file.
-    # Here: one line per .npz file found in input_dir (recursive). Default label = 0
-    npz_files = sorted([str(p) for p in Path(input_dir).rglob("*.npz")])
+files = sorted([
+    f for f in os.listdir(input_dir)
+    if f.endswith(".npz")
+])
 
-    with open(pred_path, "w") as f:
-        if len(npz_files) == 0:
-            # fallback: still create a valid file (at least one line)
-            f.write("0\n")
-        else:
-            for _ in npz_files:
-                f.write("0\n")
+with open(prediction_path, "w") as f:
+    for fname in files:
+        f.write("0\n")  # dummy class
 
-    print(f"[INGESTION] Wrote: {pred_path} ({max(1, len(npz_files))} lines)")
-
-if __name__ == "__main__":
-    main()
+print(f"Prediction file written to {prediction_path}")
