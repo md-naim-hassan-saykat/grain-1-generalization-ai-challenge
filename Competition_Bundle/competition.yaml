@@ -1,0 +1,60 @@
+# Grain Variety Classification Challenge - Generalization Track
+# Created by: Group 1 - Grain (Generalization)
+# Created on: 2025-26
+# Course: Creation of an AI Challenge - Université Paris-Saclay
+
+version: 2
+title: Grain Variety Classification Challenge
+description: "Classify wheat grain varieties from RGB or hyperspectral images with focus on model generalization across different microplots, dates, and imaging conditions."
+image: logo.png
+registration_auto_approve: True   
+docker_image: codalab/codalab-legacy:py39
+
+terms: pages/terms.md
+# You can have multiple pages e.g. Overview, Data, Starting Kit etc.
+pages:  
+  - title: Overview
+    file: pages/overview.md
+  # - title: Data
+  #   file: pages/data.md
+  
+# You can have multiple phases
+phases:
+  - index: 0
+    name: Development Phase
+    description: Development and testing phase for participants
+    start: 2026-02-01 # YYYY-MM-DD
+    end: 2026-03-15 # YYYY-MM-DD
+    tasks:
+      - 0
+  - index: 1
+    name: Final Evaluation Phase
+    description: Final evaluation phase with test set
+    start: 2026-03-16 # YYYY-MM-DD (must start after Development Phase ends)
+    end: 2026-03-31 # YYYY-MM-DD
+    tasks:
+      - 0
+
+# scoring_program is required
+# input_data, reference_data, ingestion_program are optional
+tasks:
+  - index: 0
+    name: Grain Variety Classification
+    description: "Classify wheat grain varieties from images. The challenge focuses on generalization: models must perform well on grains from different microplots, acquisition dates, and imaging conditions."
+    input_data: input_data/
+    reference_data: reference_data/  
+    scoring_program: scoring_program/
+    ingestion_program: ingestion_program/
+
+
+leaderboards:
+  - index: 0 
+    title: Main Leaderboard
+    key: main_leaderboard
+    submission_rule: "Force_Latest_Multiple" # This can be changed, see the leaderboard rules here: https://docs.codabench.org/latest/Organizers/Benchmark_Creation/Leaderboard-Functionality/#submission-rules
+    # you can add multiple columns if you have multiple scores
+    columns:
+      - index: 0
+        title: Accuracy
+        key: accuracy
+        sort: desc # Sort descending (higher is better)
