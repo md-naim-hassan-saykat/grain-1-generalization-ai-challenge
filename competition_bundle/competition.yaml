@@ -2,9 +2,8 @@ title: Grain-1 Generalization AI Challenge
 description: Homework 2 - Grain 1 Generalization AI Challenge
 docker_image: codalab/codalab-legacy:py3.8
 
-pages:
-  - title: Overview
-    file: README.html
+html_pages:
+  overview: README.html
 
 tasks:
   - id: grain1-task
