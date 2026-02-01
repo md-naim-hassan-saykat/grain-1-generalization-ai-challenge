@@ -1,8 +1,7 @@
 # Grain-1 Generalization AI Challenge
 
 This repository hosts the **official starting kit and benchmark materials** for the  
-**Grain-1 Generalization AI Challenge**, developed as part of the **AI-Master Challenge Course (2025–26)**  
-at **Université Paris-Saclay**.
+**Grain-1 Generalization AI Challenge**, developed as part of the **AI-Master Challenge Course (2025–26)** at **Université Paris-Saclay**.
 
 The challenge is designed to evaluate **robustness and generalization** of machine learning models
 under **distribution shifts** in grain variety classification.
