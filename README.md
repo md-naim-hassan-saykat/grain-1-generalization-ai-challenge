@@ -60,9 +60,8 @@ The **starting kit** provides:
 
 ### Structure
 
-starting_kit/
+Starting_Kit/
 ├── grain_1_generalization_starting_kit.ipynb
-├── sample_data/
 └── README.md
 
 The notebook is intentionally modular and documented to make extension easy.
@@ -82,16 +81,17 @@ A commented cell is provided to install required Python packages.
 ### Option 2: Run on Google Colab
 A Colab-compatible version of the notebook is provided for quick experimentation:
 
-**Colab link:** *(add Colab URL here)*
+**Colab link:**  
+https://colab.research.google.com/github/md-naim-hassan-saykat/grain-1-generalization-ai-challenge/blob/main/Starting_Kit/grain_1_generalization_starting_kit.ipynb
 
 ---
 
 ## Baseline Model
 
 The baseline model included in this repository:
-- Uses a simple statistical strategy
+- Uses a simple but meaningful machine learning classifier (Logistic Regression)
 - Produces valid predictions
-- Serves as a **lower-bound reference**, not a competitive solution
+- Serves as a lower-bound reference for comparison
 
 Participants are strongly encouraged to:
 - Improve feature extraction
