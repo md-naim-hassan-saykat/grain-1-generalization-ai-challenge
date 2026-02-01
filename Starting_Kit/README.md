@@ -56,9 +56,16 @@ A **small sample dataset** provided so that:
 ---
 
 ### Option 2: Run on Google Colab (Recommended)
-1. Upload the notebook to Google Colab **or**
-2. Open it using the provided Colab link (if available)
-3. Run all cells
+
+You can run the starting kit directly on **Google Colab** without any local setup.
+
+**Open the notebook in Google Colab**:  
+https://colab.research.google.com/github/md-naim-hassan-saykat/grain-1-generalization-ai-challenge/blob/main/Starting_Kit/grain_1_generalization_starting_kit.ipynb
+
+Steps:
+1. Open the link above
+2. Select **Runtime → Run all**
+3. Follow the notebook instructions
 
 Running on Colab requires **no local installation** and is recommended for quick experimentation.
 
@@ -119,3 +126,4 @@ This starting kit is designed to be **clear, modular, and extensible**.
 ## Support
 
 For questions related to the challenge or starting kit, please contact the challenge organizers.
+Support is provided on a best-effort basis during the challenge period.
