@@ -1,7 +1,7 @@
 # Grain-1 Generalization AI Challenge
 
 This repository hosts the **official starting kit and benchmark materials** for the  
-**Grain-1 Generalization AI Challenge**, developed as part of the **M1 AI Challenge Course (2025–26)**  
+**Grain-1 Generalization AI Challenge**, developed as part of the **AI-Master Challenge Course (2025–26)**  
 at **Université Paris-Saclay**.
 
 The challenge is designed to evaluate **robustness and generalization** of machine learning models
@@ -122,7 +122,7 @@ These files define the ingestion, scoring, and evaluation workflow used by Codab
 ## Team
 
 **Group 1 – Grain (Generalization)**  
-M1 AI Challenge Course · Université Paris-Saclay · 2025–26
+AI-Master Challenge Course · Université Paris-Saclay · 2025–26
 
 - **Md Naim Hassan Saykat** (Group Lead)  
 - *Lubin Longuépée*  
