@@ -24,8 +24,11 @@ This starting kit demonstrates:
 
 Starting_Kit/
 ├── grain_1_generalization_starting_kit.ipynb
-├── sample_data/
 └── README.md
+
+A small sample dataset is included elsewhere in the repository
+(under `competition_bundle/input_data/sample_data/input_data/`)
+and is automatically detected by the notebook.
 
 ### `grain_1_generalization_starting_kit.ipynb`
 The main notebook that:
