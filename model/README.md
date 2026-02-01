@@ -402,12 +402,17 @@ The leaderboard displays **Accuracy** as the main ranking metric. All three metr
 
 ---
 
-## Team & Contact
+## Credits : Team & Contact
 
 
 ### Contact Information
 
 - **Challenge Leader**: [Lubin LONGUEPEE] - [lubin.longuepee@gmail.com]
+- **Challenge Team**: 
+   - Lounès KEBDI
+   - Bill TANG
+   - Saykat NAIM HASSAN
+   - Eloi BEURTHERET - [eloi.beurtheret02@gmail.com]
 - **GitHub Repository**: https://github.com/md-naim-hassan-saykat/grain-1-generalization-ai-challenge
 - **Course**: Creation of an AI Challenge
 - **Institution**: Université Paris-Saclay
