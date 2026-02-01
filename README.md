@@ -125,8 +125,10 @@ These files define the ingestion, scoring, and evaluation workflow used by Codab
 M1 AI Challenge Course · Université Paris-Saclay · 2025–26
 
 - **Md Naim Hassan Saykat** (Group Lead)  
-- *Teammate 2*  
-- *Teammate 3*
+- *Lubin Longuépée*  
+- *Eloi Beurtheret*
+- *Lounès Kebdi*  
+- *Bill Tang*
 
 For questions regarding the challenge or starting kit, please contact the group lead.
 
