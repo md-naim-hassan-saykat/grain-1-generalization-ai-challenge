@@ -82,7 +82,7 @@ A commented cell is provided to install required Python packages.
 ### Option 2: Run on Google Colab
 A Colab-compatible version of the notebook is provided for quick experimentation:
 
-**Colab link:** *(add your Colab URL here)*
+**Colab link:** *(add Colab URL here)*
 
 ---
 
