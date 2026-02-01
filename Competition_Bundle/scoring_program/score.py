@@ -78,25 +78,88 @@ class Scoring:
             predictions_dir (str): The predictions directory name.
         """
         print("[*] Reading ingestion result")
+        print(f"[*] Predictions directory: {predictions_dir}")
+        print(f"[*] Predictions directory exists: {os.path.exists(predictions_dir)}")
+        
+        if os.path.exists(predictions_dir):
+            print(f"[*] Contents of predictions directory:")
+            for item in os.listdir(predictions_dir):
+                item_path = os.path.join(predictions_dir, item)
+                item_type = "DIR" if os.path.isdir(item_path) else "FILE"
+                item_size = os.path.getsize(item_path) if os.path.isfile(item_path) else 0
+                print(f"    - {item} ({item_type}, {item_size} bytes)")
+        else:
+            print(f"[!] WARNING: Predictions directory does not exist!")
         
         ingestion_result_file = os.path.join(predictions_dir, "result.json")
+        print(f"[*] Looking for result.json at: {ingestion_result_file}")
         
-        if not os.path.exists(ingestion_result_file):
+        # Try alternative locations if primary path doesn't exist
+        alternative_paths = [
+            ingestion_result_file,  # Primary path
+            "/app/output/result.json",  # Direct from ingestion output (fallback)
+        ]
+        
+        found_file = None
+        for alt_path in alternative_paths:
+            if os.path.exists(alt_path):
+                found_file = alt_path
+                print(f"[*] Found result.json at: {alt_path}")
+                break
+            else:
+                print(f"[*] Not found at: {alt_path}")
+        
+        if found_file is None:
+            print(f"[!] ERROR: result.json not found in any expected location")
+            print(f"[!] Searched paths:")
+            for alt_path in alternative_paths:
+                print(f"    - {alt_path}: NOT FOUND")
+            
+            # List what's actually in the directories
+            print(f"[!] Contents of {predictions_dir}:")
+            if os.path.exists(predictions_dir):
+                for item in os.listdir(predictions_dir):
+                    print(f"    - {item}")
+            else:
+                print(f"    Directory does not exist")
+            
+            print(f"[!] Contents of /app/output/ (if exists):")
+            if os.path.exists("/app/output"):
+                for item in os.listdir("/app/output"):
+                    print(f"    - {item}")
+            else:
+                print(f"    Directory does not exist")
+            
             raise FileNotFoundError(
-                f"Ingestion result file not found: {ingestion_result_file}\n"
-                f"Make sure result.json exists in {predictions_dir}"
+                f"Ingestion result file not found in any expected location.\n"
+                f"Searched: {alternative_paths}\n"
+                f"Make sure ingestion completed successfully and created result.json"
             )
         
-        with open(ingestion_result_file, 'r') as f:
-            self.ingestion_result = json.load(f)
+        ingestion_result_file = found_file
         
-        print(f"[*] Loaded ingestion result from {ingestion_result_file}")
+        print(f"[*] Found result.json, loading...")
+        file_size = os.path.getsize(ingestion_result_file)
+        print(f"[*] File size: {file_size} bytes")
+        
+        try:
+            with open(ingestion_result_file, 'r') as f:
+                self.ingestion_result = json.load(f)
+            print(f"[*] Successfully loaded ingestion result from {ingestion_result_file}")
+        except json.JSONDecodeError as e:
+            print(f"[!] ERROR: Failed to parse JSON from result.json: {e}")
+            print(f"[!] File might be corrupted or empty")
+            raise
         
         # Extract predictions
         if "predictions" in self.ingestion_result:
             predictions_dict = self.ingestion_result["predictions"]
             print(f"[*] Number of predictions: {len(predictions_dict)}")
+            if len(predictions_dict) > 0:
+                print(f"[*] Sample predictions (first 3): {list(predictions_dict.items())[:3]}")
         else:
+            print(f"[!] ERROR: Ingestion result does not contain 'predictions' key")
+            print(f"[!] Available keys: {list(self.ingestion_result.keys())}")
             raise ValueError("Ingestion result does not contain 'predictions' key")
 
     def compute_scores(self):

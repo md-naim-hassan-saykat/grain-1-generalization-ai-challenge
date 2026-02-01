@@ -51,7 +51,8 @@ leaderboards:
   - index: 0 
     title: Main Leaderboard
     key: main_leaderboard
-    submission_rule: "Force_Latest_Multiple" # This can be changed, see the leaderboard rules here: https://docs.codabench.org/latest/Organizers/Benchmark_Creation/Leaderboard-Functionality/#submission-rules
+    # submission_rule: omitted to allow manual choice (private/public) - default behavior
+    # Valid options if needed: "Force_Latest" (auto-add latest), "Force_Latest_Multiple" (auto-add all)
     # you can add multiple columns if you have multiple scores
     columns:
       - index: 0
