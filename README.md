@@ -1,5 +1,9 @@
 # Grain-1 Generalization AI Challenge
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](
+https://colab.research.google.com/github/md-naim-hassan-saykat/grain-1-generalization-ai-challenge/blob/main/Starting_Kit/grain_1_generalization_starting_kit.ipynb
+)
+
 This repository hosts the **official starting kit and benchmark materials** for the  
 **Grain-1 Generalization AI Challenge**, developed as part of the **AI-Master Challenge Course (2025–26)** at **Université Paris-Saclay**.
 
@@ -30,7 +34,7 @@ This challenge emphasizes **generalization performance**, not just in-distributi
 - **Output**:  
   One predicted label per input sample  
 - **Sample Data**:  
-  A small, lightweight subset is provided in the starting kit so that all code runs end-to-end
+  A small, lightweight subset is provided in the repository so that all code runs end-to-end
   without access to the full dataset.
 
 > The full dataset is intentionally not distributed to mimic real-world deployment constraints.
@@ -58,13 +62,15 @@ The **starting kit** provides:
 - Automatic generation of Codabench-compatible submissions
 - Clear separation between **sample data**, **dummy/debug mode**, and **real evaluation mode**
 
-### Structure
+## Contents of This Folder
 
 Starting_Kit/
 ├── grain_1_generalization_starting_kit.ipynb
 └── README.md
 
-The notebook is intentionally modular and documented to make extension easy.
+A small sample dataset is included elsewhere in the repository
+(under `competition_bundle/input_data/sample_data/input_data/`)
+and is automatically detected by the notebook.
 
 ---
 
