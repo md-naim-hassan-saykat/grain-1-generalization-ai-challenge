@@ -1,5 +1,7 @@
 # Starting Kit – Grain-1 Generalization Challenge
 
+> This starting kit is designed for participants with no prior knowledge of the challenge.
+
 This folder contains the **official starting kit** for the **Grain-1 Generalization AI Challenge**.
 
 The goal of this starting kit is to help participants **quickly understand the problem, data format, evaluation procedure, and submission workflow**, and to provide a **working baseline model** that can be extended.
