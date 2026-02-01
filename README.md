@@ -82,7 +82,7 @@ and is automatically detected by the notebook.
 3. Open `grain_1_generalization_starting_kit.ipynb`
 4. Run all cells
 
-A commented cell is provided to install required Python packages.
+> A commented cell is provided to install required Python packages.
 
 ### Option 2: Run on Google Colab
 A Colab-compatible version of the notebook is provided for quick experimentation:
