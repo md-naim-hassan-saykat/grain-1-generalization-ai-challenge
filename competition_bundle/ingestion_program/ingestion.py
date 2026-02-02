@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 import numpy as np
 
 # Codabench standard paths
@@ -8,7 +9,9 @@ OUTPUT_DIR = "/app/output"
 SUBMISSION_DIR = "/app/ingested_program"
 
 os.makedirs(OUTPUT_DIR, exist_ok=True)
-PREDICTION_PATH = os.path.join(OUTPUT_DIR, "prediction")
+
+PREDICTION_TXT = os.path.join(OUTPUT_DIR, "prediction")   # optional legacy
+RESULT_JSON = os.path.join(OUTPUT_DIR, "result.json")     # REQUIRED by scorer
 
 
 def find_npz_files(root_dir):
@@ -35,9 +38,7 @@ def load_npz_x(npz_path):
         x = z["X"]
     else:
         x = z[list(z.files)[0]]
-
-    x = np.asarray(x).reshape(-1)
-    return x
+    return np.asarray(x).reshape(-1)
 
 
 def main():
@@ -48,44 +49,60 @@ def main():
     except Exception as e:
         raise ImportError(
             "Could not import Model from submission. "
-            "submission.zip must contain model.py at the root, with class Model."
+            "submission.zip must contain model.py at the root with class Model."
         ) from e
 
     model = Model()
 
-    # Find all npz files (works for input_data/sample_data/input_data/)
+    # Find npz
     npz_files = find_npz_files(INPUT_DIR)
     if not npz_files:
         raise FileNotFoundError(f"No .npz files found under {INPUT_DIR}")
 
-    # Load features into a matrix
-    X_list = [load_npz_x(fp) for fp in npz_files]
-    X = np.stack(X_list, axis=0)
+    # Load features
+    X = np.stack([load_npz_x(fp) for fp in npz_files], axis=0)
 
-    # Try prediction in a robust way:
-    # 1) predict(X)  (numpy style)
-    # 2) predict({"X": X, "filepaths": [...]}) (dict style)
+    # Predict (support both predict(X) and predict(dict))
     try:
         preds = model.predict(X)
     except Exception:
         preds = model.predict({"X": X, "filepaths": npz_files})
 
-    preds = np.asarray(preds).reshape(-1).astype(str)
+    preds = np.asarray(preds).reshape(-1)
 
+    # Safety check
     if len(preds) != len(npz_files):
         raise ValueError(
             f"Predictions length {len(preds)} does not match "
             f"number of samples {len(npz_files)}"
         )
 
-    # Write predictions: one per line
-    with open(PREDICTION_PATH, "w", encoding="utf-8") as f:
-        for p in preds:
-            f.write(p + "\n")
+    # Convert to int labels if possible (best)
+    # If model returns strings, keep as-is.
+    try:
+        preds_out = [int(p) for p in preds]
+    except Exception:
+        preds_out = [str(p) for p in preds]
+
+    # Build filename->label mapping (what scorer expects)
+    predictions_dict = {
+        os.path.basename(fp): preds_out[i]
+        for i, fp in enumerate(npz_files)
+    }
+
+    # Write result.json (REQUIRED)
+    with open(RESULT_JSON, "w", encoding="utf-8") as f:
+        json.dump({"predictions": predictions_dict}, f, indent=2)
+
+    # Also write prediction text file (optional)
+    with open(PREDICTION_TXT, "w", encoding="utf-8") as f:
+        for p in preds_out:
+            f.write(f"{p}\n")
 
     print("Ingestion completed successfully.")
     print("Num samples:", len(npz_files))
-    print("Prediction file written to:", PREDICTION_PATH)
+    print("Wrote:", RESULT_JSON)
+    print("Wrote:", PREDICTION_TXT)
 
 
 if __name__ == "__main__":
