@@ -129,7 +129,7 @@ These files define the ingestion, scoring, and evaluation workflow used by Codab
 **Group 1 – Grain (Generalization)**  
 AI-Master Challenge Course · Université Paris-Saclay · 2025–26
 
-> For questions regarding the challenge or the starting kit, please contact the group lead at: mdnaimhassansaykat@gmail.com
+For questions regarding the challenge or the starting kit, please contact the group lead at: mdnaimhassansaykat@gmail.com
 
 ---
 
