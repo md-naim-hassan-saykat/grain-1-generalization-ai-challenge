@@ -8,49 +8,61 @@ OUT_DIR = "/app/output"
 
 os.makedirs(OUT_DIR, exist_ok=True)
 
-PREDICTION_FILE = os.path.join(PRED_DIR, "prediction")
-REFERENCE_FILE = os.path.join(REF_DIR, "ground_truth")
+RESULT_JSON = os.path.join(PRED_DIR, "result.json")
+REF_JSON = os.path.join(REF_DIR, "test_labels.json")  # matches your teammate logs
 
 METRICS_FILE = os.path.join(OUT_DIR, "metrics.json")
 SCORES_FILE = os.path.join(OUT_DIR, "scores.txt")
 SCORES_JSON = os.path.join(OUT_DIR, "scores.json")
 
 
-def load_labels(path):
-    """Load labels from a text file (one label per line)."""
-    if not os.path.exists(path):
-        raise FileNotFoundError(f"File not found: {path}")
-
-    labels = []
-    with open(path, "r", encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if line:
-                labels.append(line)
-    return labels
-
-
 def main():
-    y_pred = load_labels(PREDICTION_FILE)
-    y_true = load_labels(REFERENCE_FILE)
+    # 1) Load reference
+    if not os.path.exists(REF_JSON):
+        raise FileNotFoundError(f"Reference file not found: {REF_JSON}")
 
-    if len(y_true) == 0:
-        raise ValueError("Ground truth is empty. Cannot compute accuracy.")
+    with open(REF_JSON, "r", encoding="utf-8") as f:
+        ref = json.load(f)
 
-    if len(y_pred) != len(y_true):
-        raise ValueError(
-            f"Prediction length ({len(y_pred)}) does not match "
-            f"ground truth length ({len(y_true)})"
-        )
+    # Expecting: {"labels": {"filename.npz": int_label, ...}}
+    if "labels" not in ref or not isinstance(ref["labels"], dict):
+        raise ValueError("Reference JSON must contain a dict field: labels")
 
-    correct = sum(p == t for p, t in zip(y_pred, y_true))
-    accuracy = correct / len(y_true)
+    y_true_map = ref["labels"]
 
-    # Optional debug metrics
+    # 2) Load predictions
+    if not os.path.exists(RESULT_JSON):
+        raise FileNotFoundError(f"Result file not found: {RESULT_JSON}")
+
+    with open(RESULT_JSON, "r", encoding="utf-8") as f:
+        res = json.load(f)
+
+    # Expecting: {"predictions": {"filename.npz": int_label, ...}}
+    if "predictions" not in res or not isinstance(res["predictions"], dict):
+        raise ValueError("result.json must contain a dict field: predictions")
+
+    y_pred_map = res["predictions"]
+
+    # 3) Compare on common keys (and enforce same size)
+    common = sorted(set(y_true_map.keys()) & set(y_pred_map.keys()))
+    if len(common) == 0:
+        raise ValueError("No common filenames between predictions and ground truth.")
+
+    # If you want strictness (recommended):
+    if len(common) != len(y_true_map):
+        missing = sorted(set(y_true_map.keys()) - set(y_pred_map.keys()))
+        raise ValueError(f"Missing predictions for {len(missing)} samples. Example: {missing[:5]}")
+
+    correct = 0
+    for k in common:
+        if str(y_pred_map[k]) == str(y_true_map[k]):
+            correct += 1
+    accuracy = correct / len(common)
+
+    # 4) Write outputs
     with open(METRICS_FILE, "w", encoding="utf-8") as f:
-        json.dump({"accuracy": accuracy}, f, indent=2)
+        json.dump({"accuracy": accuracy, "num_samples": len(common)}, f, indent=2)
 
-    # Leaderboard output (common formats)
     with open(SCORES_FILE, "w", encoding="utf-8") as f:
         f.write(f"accuracy:{accuracy}\n")
 
@@ -59,6 +71,7 @@ def main():
 
     print("Scoring completed successfully.")
     print("Accuracy:", accuracy)
+    print("Num samples:", len(common))
 
 
 if __name__ == "__main__":
