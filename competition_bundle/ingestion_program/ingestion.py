@@ -125,7 +125,7 @@ def main():
     print("[*] Wrote:", SCORES_TXT)
     print("[*] Wrote:", SCORES_JSON)
     print("----------------------------------------------")
-    print("[✔] Scoring Program executed successfully!")
+    print("Scoring Program executed successfully!")
     print("----------------------------------------------")
 
 
