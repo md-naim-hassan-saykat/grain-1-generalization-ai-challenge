@@ -9,8 +9,10 @@ OUT_DIR = "/app/output"
 os.makedirs(OUT_DIR, exist_ok=True)
 
 PREDICTION_FILE = os.path.join(PRED_DIR, "prediction")
-REFERENCE_FILE = os.path.join(REF_DIR, "ground_truth")
+REFERENCE_FILE  = os.path.join(REF_DIR, "ground_truth")
+
 METRICS_FILE = os.path.join(OUT_DIR, "metrics.json")
+SCORES_FILE  = os.path.join(OUT_DIR, "scores.txt")  # <--- important for leaderboard
 
 
 def load_labels(path):
@@ -34,20 +36,27 @@ def main():
             f"ground truth length ({len(y_true)})"
         )
 
+    if len(y_true) == 0:
+        raise ValueError("Ground truth is empty. Cannot compute accuracy.")
+
     # 3) Compute accuracy
     correct = sum(p == t for p, t in zip(y_pred, y_true))
-    accuracy = correct / len(y_true) if len(y_true) > 0 else 0.0
+    accuracy = correct / len(y_true)
 
-    # 4) Write metrics.json (Codabench-required)
-    metrics = {
-        "accuracy": accuracy
-    }
-
+    # 4) Write metrics.json (nice for debugging / extra metrics)
+    metrics = {"accuracy": accuracy}
     with open(METRICS_FILE, "w", encoding="utf-8") as f:
-        json.dump(metrics, f)
+        json.dump(metrics, f, indent=2)
+
+    # 5) Write scores.txt (Codabench leaderboard expects this in many setups)
+    # Format: one line per metric -> "<name>:<value>"
+    with open(SCORES_FILE, "w", encoding="utf-8") as f:
+        f.write(f"accuracy:{accuracy}\n")
 
     print("Scoring completed successfully.")
     print("Accuracy:", accuracy)
+    print("Wrote:", METRICS_FILE)
+    print("Wrote:", SCORES_FILE)
 
 
 if __name__ == "__main__":
