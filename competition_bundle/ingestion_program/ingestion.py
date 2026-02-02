@@ -130,26 +130,29 @@ def main():
         for fp in all_files:
             x, _ = npz_to_xy(fp)
             X_list.append(x)
+
         X_test = np.stack(X_list, axis=0)
         test_files = all_files
 
     # 4) Train if labels exist in train split
-    if X_train is not None and y_train is not None:
-        y_train = np.asarray(y_train).reshape(-1)
+    if X_train is not None and y_train is not None and len(train_files) > 0:
+        y_train = np.asarray(y_train).reshape(-1).astype(str)
         model.train(X_train, y_train)
 
     # Optional fallback: train on val if train is missing but val has labels
-    if X_train is None and X_val is not None and y_val is not None:
-        y_val = np.asarray(y_val).reshape(-1)
+    elif X_val is not None and y_val is not None and len(val_files) > 0:
+        y_val = np.asarray(y_val).reshape(-1).astype(str)
         model.train(X_val, y_val)
+
+    else:
+        print("Warning: No labeled train/val data found. Running predict() without training.")
 
     # 5) Predict on test
     if X_test is None or len(test_files) == 0:
         raise ValueError("No test data found to run predictions.")
 
     preds = model.predict(X_test)
-    preds = np.asarray(preds).reshape(-1)
-    preds = preds.astype(str)
+    preds = np.asarray(preds).reshape(-1).astype(str)
 
     # Safety check: must output exactly 1 prediction per test sample
     if len(preds) != len(test_files):
@@ -161,12 +164,11 @@ def main():
     # 6) Write predictions (one per line) to /app/output/prediction
     with open(PREDICTION_PATH, "w", encoding="utf-8") as f:
         for p in preds:
-            f.write(f"{str(p)}\n")
+            f.write(f"{p}\n")
 
     print("Ingestion completed successfully.")
     print("Num test samples:", len(test_files))
     print("Prediction file written to:", PREDICTION_PATH)
-
 
 if __name__ == "__main__":
     main()
