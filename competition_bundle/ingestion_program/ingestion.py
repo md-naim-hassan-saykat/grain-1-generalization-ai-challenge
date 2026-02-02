@@ -1,102 +1,132 @@
 import os
-import sys
 import json
-import numpy as np
 
-# Codabench standard paths (do not change)
-INPUT_DIR = "/app/input_data"
-OUTPUT_DIR = "/app/output"
-SUBMISSION_DIR = "/app/ingested_program"
+# Codabench standard paths
+PRED_DIR = "/app/input/res"
+REF_DIR  = "/app/input/ref"
+OUT_DIR  = "/app/output"
 
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+os.makedirs(OUT_DIR, exist_ok=True)
 
-RESULT_JSON_PATH = os.path.join(OUTPUT_DIR, "result.json")
+RESULT_JSON = os.path.join(PRED_DIR, "result.json")
+REF_JSON    = os.path.join(REF_DIR, "test_labels.json")
 
-
-# -------------------------
-# Helpers
-# -------------------------
-def find_npz_files(root_dir):
-    """Recursively find all .npz files under root_dir."""
-    npz_files = []
-    for r, _, files in os.walk(root_dir):
-        for f in files:
-            if f.endswith(".npz"):
-                npz_files.append(os.path.join(r, f))
-    return sorted(npz_files)
+SCORES_TXT  = os.path.join(OUT_DIR, "scores.txt")
+SCORES_JSON = os.path.join(OUT_DIR, "scores.json")
 
 
-def load_npz_x(npz_path):
+def debug_list_dir(path, title):
+    print(f"[*] {title}: {path}")
+    print(f"[*] Exists: {os.path.exists(path)}")
+    if os.path.exists(path) and os.path.isdir(path):
+        for name in sorted(os.listdir(path)):
+            full = os.path.join(path, name)
+            kind = "DIR" if os.path.isdir(full) else "FILE"
+            size = os.path.getsize(full) if os.path.isfile(full) else "-"
+            print(f"    - {name} ({kind}, {size} bytes)")
+
+
+def load_json(path):
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"File not found: {path}")
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def load_ground_truth(ref_path):
     """
-    Load one .npz and return x as a 1D vector.
-    Tries common keys: features/x/X, else first array.
+    Expected format (typical):
+      {
+        "labels": { "file1.npz": 3, ... }
+      }
+    Or sometimes:
+      { "file1.npz": 3, ... }
     """
-    z = np.load(npz_path, allow_pickle=True)
+    ref = load_json(ref_path)
 
-    if "features" in z:
-        x = z["features"]
-    elif "x" in z:
-        x = z["x"]
-    elif "X" in z:
-        x = z["X"]
-    else:
-        x = z[list(z.files)[0]]
+    if isinstance(ref, dict) and "labels" in ref and isinstance(ref["labels"], dict):
+        return ref["labels"]
 
-    return np.asarray(x).reshape(-1)
+    if isinstance(ref, dict):
+        # assume direct mapping filename -> label
+        return ref
+
+    raise ValueError("Unsupported ground truth format in test_labels.json")
 
 
-# -------------------------
-# Main ingestion logic
-# -------------------------
+def load_predictions(result_path):
+    """
+    Expected format:
+      {
+        "predictions": { "file1.npz": 3, ... }
+      }
+    """
+    res = load_json(result_path)
+
+    if not isinstance(res, dict) or "predictions" not in res:
+        raise ValueError("result.json must contain a top-level key 'predictions'")
+
+    preds = res["predictions"]
+    if not isinstance(preds, dict):
+        raise ValueError("'predictions' in result.json must be a dict: filename -> label")
+
+    return preds
+
+
+def compute_accuracy(y_true_map, y_pred_map):
+    # evaluate on intersection only (Codabench style)
+    common = sorted(set(y_true_map.keys()) & set(y_pred_map.keys()))
+    if not common:
+        raise ValueError("No common filenames between predictions and ground truth.")
+
+    correct = 0
+    for k in common:
+        t = str(y_true_map[k]).strip()
+        p = str(y_pred_map[k]).strip()
+        correct += int(p == t)
+
+    return correct / len(common), len(common)
+
+
 def main():
-    # 1) Import participant model
-    sys.path.insert(0, SUBMISSION_DIR)
-    try:
-        from model import Model
-    except Exception as e:
-        raise ImportError(
-            "Could not import Model from submission. "
-            "submission.zip must contain model.py at the root, defining class Model."
-        ) from e
+    print("----------------------------------------------")
+    print("Scoring Program started!")
+    print("----------------------------------------------")
 
-    model = Model()
+    # Debug directories
+    debug_list_dir(PRED_DIR, "Predictions directory")
+    debug_list_dir(REF_DIR,  "Reference directory")
+    debug_list_dir(OUT_DIR,  "Output directory")
 
-    # 2) Locate npz files
-    npz_files = find_npz_files(INPUT_DIR)
-    if not npz_files:
-        raise FileNotFoundError(f"No .npz files found under {INPUT_DIR}")
+    # Load files
+    print(f"[*] Loading predictions from: {RESULT_JSON}")
+    y_pred_map = load_predictions(RESULT_JSON)
 
-    # 3) Load data matrix
-    X_list = [load_npz_x(fp) for fp in npz_files]
-    X = np.stack(X_list, axis=0)
+    print(f"[*] Loading ground truth from: {REF_JSON}")
+    y_true_map = load_ground_truth(REF_JSON)
 
-    # 4) Predict (robust)
-    try:
-        preds = model.predict(X)
-    except Exception:
-        preds = model.predict({"X": X, "filepaths": npz_files})
+    # Compute primary metric
+    acc, n = compute_accuracy(y_true_map, y_pred_map)
 
-    preds = np.asarray(preds).reshape(-1)
+    print("[*] ========================================")
+    print("[*] EVALUATION METRICS")
+    print("[*] ========================================")
+    print(f"[*] Accuracy: {acc:.4f} ({acc*100:.2f}%) [PRIMARY]")
+    print(f"[*] Num common samples: {n}")
+    print("[*] ========================================")
 
-    if len(preds) != len(npz_files):
-        raise ValueError(
-            f"Predictions length {len(preds)} does not match number of samples {len(npz_files)}"
-        )
+    # Write leaderboard outputs
+    with open(SCORES_TXT, "w", encoding="utf-8") as f:
+        f.write(f"accuracy:{acc}\n")
 
-    # 5) Build result.json mapping filename -> prediction
-    # IMPORTANT: scoring expects keys to be filenames, not full paths
-    results = {"predictions": {}}
-    for fp, p in zip(npz_files, preds):
-        fname = os.path.basename(fp)
-        results["predictions"][fname] = int(p) if str(p).isdigit() else str(p)
+    with open(SCORES_JSON, "w", encoding="utf-8") as f:
+        json.dump({"accuracy": acc, "num_samples": n}, f, indent=2)
 
-    # 6) Write result.json to /app/output/
-    with open(RESULT_JSON_PATH, "w", encoding="utf-8") as f:
-        json.dump(results, f, indent=2)
-
-    print("Ingestion completed successfully.")
-    print("Num samples:", len(npz_files))
-    print("Wrote:", RESULT_JSON_PATH)
+    print("[*] Wrote:", SCORES_TXT)
+    print("[*] Wrote:", SCORES_JSON)
+    print("----------------------------------------------")
+    print("[✔] Scoring Program executed successfully!")
+    print("----------------------------------------------")
 
 
 if __name__ == "__main__":
