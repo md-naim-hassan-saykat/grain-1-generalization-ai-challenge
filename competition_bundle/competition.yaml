@@ -1,14 +1,17 @@
 title: Grain-1 Generalization AI Challenge
-description: Homework 2 - Grain 1 Generalization AI Challenge
+description: A small educational benchmark for grain classification/generalization.
+
 docker_image: codalab/codalab-legacy:py3.8
 
+# Competition pages (shown on Codabench)
 html_pages:
-  overview: README.html
+  overview: README.md
 
 tasks:
   - id: grain1-task
-    name: Grain-1-Generalization-Sample-Task
+    name: Grain-1 Generalization (Sample Task)
 
 submission:
+  # Participants submit a zip containing result.json at the root
   submission_limit: 100
-  file_extensions: [.zip]
+  file_extensions: [".zip"]
