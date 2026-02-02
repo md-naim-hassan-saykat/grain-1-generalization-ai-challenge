@@ -1,11 +1,15 @@
 version: 2
 title: Grain-1 Generalization AI Challenge
-description: Homework 2 - Grain 1 Generalization AI Challenge
-docker_image: codalab/codalab-legacy:py3.8
-
-# REQUIRED in v2
 image: logo.png
 terms: terms.md
+
+description: Homework 4 - Publish challenge (M1 AI Challenge Class 2025-26)
+
+docker_image: codalab/codalab-legacy:gpu310
+
+registration_auto_approve: true
+make_programs_available: true
+make_input_data_available: true
 
 pages:
   - title: Overview
@@ -13,29 +17,31 @@ pages:
 
 phases:
   - index: 0
-    name: Development Phase
-    start: 2026-02-01 00:00:00
-    # you can remove end to keep it running indefinitely
-    end: 2026-12-31 23:59:59
+    name: Development
+    description: Main phase for submissions
+    start: 2026-02-02 00:00:00
+    # end: 2026-02-04 23:59:59   # optional
+    max_submissions: 100
+    max_submissions_per_day: 100
     tasks:
       - 0
 
 tasks:
   - index: 0
-    name: grain1-task
-    description: Grain classification task
-    input_data: input_data/
-    reference_data: reference_data/
-    ingestion_program: ingestion_program/
-    scoring_program: scoring_program/
+    name: Grain-1 Task
+    description: Grain variety classification (sample task)
+    input_data: input_data
+    reference_data: reference_data
+    ingestion_program: ingestion_program
+    scoring_program: scoring_program
 
 leaderboards:
   - title: Results
     key: main
-    submission_rule: "Force_Last"
+    submission_rule: "Force_Best"
     columns:
-      - title: Accuracy
-        key: accuracy
+      - title: Score
+        key: score
         index: 0
         sorting: desc
-        precision: 4
+        precision: 6
