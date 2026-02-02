@@ -12,6 +12,7 @@ tasks:
     name: Grain-1 Generalization (Sample Task)
 
 submission:
-  # Participants submit a zip containing result.json at the root
+  # Participants submit a zip containing model.py (and optionally requirements.txt) at the root.
+  # The ingestion program runs the model and produces result.json or prediction for scoring.
   submission_limit: 100
   file_extensions: [".zip"]
