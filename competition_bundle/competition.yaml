@@ -1,18 +1,24 @@
 title: Grain-1 Generalization AI Challenge
-description: A small educational benchmark for grain classification/generalization.
-
+description: Homework 2 - Grain 1 Generalization AI Challenge
 docker_image: codalab/codalab-legacy:py3.8
 
-# Competition pages (shown on Codabench)
 html_pages:
-  overview: README.md
+  overview: README.html
 
 tasks:
   - id: grain1-task
-    name: Grain-1 Generalization (Sample Task)
+    name: Grain-1-Generalization-Sample-Task
+
+phases:
+  - id: test-phase
+    name: Test Phase
+    description: Evaluation phase
+    start_date: 2026-01-01
+    end_date: 2026-12-31
+    max_submissions: 100
+    tasks:
+      - grain1-task
 
 submission:
-  # Participants submit a zip containing model.py (and optionally requirements.txt) at the root.
-  # The ingestion program runs the model and produces result.json or prediction for scoring.
   submission_limit: 100
   file_extensions: [".zip"]
