@@ -1,33 +1,15 @@
 title: Grain-1 Generalization AI Challenge
 description: Homework 2 - Grain 1 Generalization AI Challenge
+docker_image: codalab/codalab-legacy:py3.8
 
 pages:
-  - title: Overview
+  - title: overview
     file: README.html
 
-phases:
-  - index: 0
-    name: Main phase
-    description: Main evaluation phase
-    start: 2026-01-01
-    end: 2027-01-01
-    tasks:
-      - 0
-
 tasks:
-  - index: 0
-    name: Grain1 Task
-    description: Grain classification task
-    ingestion_program: ingestion_program.zip
-    scoring_program: scoring_program.zip
-    reference_data: reference_data.zip
-    input_data: input_data.zip
+  - id: grain1-task
+    name: Grain-1-Generalization-Sample-Task
 
-leaderboard:
-  - title: Results
-    key: main
-    columns:
-      - title: accuracy
-        key: accuracy
-        index: 0
-        sorting: desc
+submission:
+  submission_limit: 100
+  file_extensions: [.zip]
