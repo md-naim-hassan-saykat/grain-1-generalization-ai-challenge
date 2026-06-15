@@ -5,7 +5,7 @@ https://colab.research.google.com/github/md-naim-hassan-saykat/grain-1-generaliz
 )
 
 This repository hosts the **official starting kit and benchmark materials** for the  
-**Grain-1 Generalization AI Challenge**, developed as part of the **AI-Master Challenge Course (2025–26)** at **Université Paris-Saclay**.
+**Grain-1 Generalization AI Challenge**, developed as part of the **AI-Master Challenge Course (2025-26)** at **Université Paris-Saclay**.
 
 The challenge is designed to evaluate **robustness and generalization** of machine learning models
 under **distribution shifts** in grain variety classification.
@@ -126,7 +126,7 @@ These files define the ingestion, scoring, and evaluation workflow used by Codab
 
 ## Team
 
-**Group 1 – Grain (Generalization)**  
+**Group 1 - Grain (Generalization)**  
 AI Master Challenge Course · Université Paris-Saclay · 2025–2026  
 
 For questions regarding the challenge or the starting kit, please contact:
